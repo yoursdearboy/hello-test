@@ -4,7 +4,29 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(dplyr)
+library(readr)
+
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data, include=FALSE}
+top <- read_csv("billboard.csv") |>
+  select(date = "Date",
+         song = "Song",
+         artist = "Artist")
+```
+
+```{r}
+modern <- top |>
+  filter(date >= "1980-01-01")
+```
+
+```{r}
+artists <- modern |>
+  count(artist) |>
+  arrange(-n) |>
+  filter(! artist %in% c("Soundtrack", "Various Artists"))
 ```
 
 ```{r}
@@ -18,3 +40,12 @@ me <- median(xs)
 ```
 
 The median is `r me`
+
+# Artists list
+
+```{r}
+artists[xs,] |>
+  arrange(-n) |>
+  gt::gt()
+```
+
